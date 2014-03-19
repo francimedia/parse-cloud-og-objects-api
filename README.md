@@ -23,3 +23,12 @@ Even if you're only familiar with mobile development, we hope you'll find Cloud 
 
 
 
+Setup
+==========================
+* Create Parse app (https://parse.com/apps/)
+* Go to "Settings" > Application Keys. Rename /config/global.sample.json to /config/global.json and add you Application ID and Master Key
+* Go to "Web hosting" and set a Parse App Name (http://parseappname.parseapp.com)
+* Create a Facebook App: https://developers.facebook.com/apps
+* Open Graph > Add an Object Type > Object Type Name: City
+* Go to Graph API Explorer https://graph.facebook.com/oauth/access_token?client_id={app-id}&client_secret={app-secret}&grant_type=client_credentials
+* Response: access_token=XXX
