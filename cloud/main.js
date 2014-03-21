@@ -1,44 +1,54 @@
+var config = require('cloud/config.js').config;
 
-// Use Parse.Cloud.define to define as many cloud functions as you want.
-// For example:
-Parse.Cloud.define("hello", function(request, response) {
-  response.success("Hello world!");
-});
+var openGraph = {
 
+    object_name: null,
 
-Parse.Cloud.afterSave("city", function(request) {
-	console.log(request);
+    setObjectName: function (object_name) {
+        this.object_name = object_name;
+    },
 
-	var data = {
-    	title: 'New York City',
-    	image: 'http://upload.wikimedia.org/wikipedia/en/d/db/Flower-taxi.jpg',
-    	url: 'http://www1.nyc.gov/',
-    	description: 'Best City in the world'
-    };
+    update: function (request, response) {
+        Parse.Cloud.httpRequest({
+            method: 'POST',
+            url: 'https://graph.facebook.com/' + openGraph.getObjectPath(request.object),
+            body: {
+                access_token: config.access_token,
+                object: openGraph.getObjectAsString(request.object)
+            },
+            success: function (httpResponse) {
+                request.object.set("og_object_id", httpResponse.data.id);
+                response.success();
+            },
+            error: function (httpResponse) {
+                response.error("Couldn't create or update OG object");
+            }
+        });
+    },
 
-	// var data = '{\"title\":\"The Hunt for Red October\",\"image\":\"http://ecx.images-amazon.com/images/I/314leP6WviL._SL500_AA300_.jpg\",\"url\":\"https://link.you.want.displayed/example/hunt-for-red-october-link\",\"description\":\"Classic cold war technothriller\",}';
+    getObjectAsString: function (object) {
+        return JSON.stringify({
+            title: object.get('name'),
+            image: object.get('image'),
+            url: object.get('url'),
+            description: object.get('description')
+        });
+    },
 
-    console.log(JSON.stringify(data));
+    getObjectPath: function (object) {
+        //  if there is not og_object_id, add new OG object
+        if (!object.get('og_object_id') || object.get('og_object_id') == 'undefined') {
+            return '/app/objects/' + config.namespace + ':' + openGraph.object_name;
+        }
+        // else update existing object
+        else {
+            return request.object.get('og_object_id');
+        }
+    }
 
-	var _request = {
-	  method: 'POST',
-	  url: 'https://graph.facebook.com/app/objects/city',
-	  body: {
-	    access_token: '',
-	    object: JSON.stringify(data)
-	  },
-	  success: function(httpResponse) {
-	  	console.log(httpResponse);
-	    console.log(httpResponse.text);
-	  },
-	  error: function(httpResponse) {
-	  	console.log(httpResponse);
-	    console.error('Request failed with response code ' + httpResponse.status);
-	  }
-	};
+}
 
-	console.log(_request);
-	
-	Parse.Cloud.httpRequest(_request);
-
+Parse.Cloud.beforeSave("city", function (request, response) {
+    openGraph.setObjectName("city");
+    openGraph.update(request, response);
 });
