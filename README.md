@@ -3,6 +3,11 @@ Create Open Graph Objects using the Facebook Object API and Parse Cloud Code
 
 This repo demonstrates how to use the Facebook Object API (https://developers.facebook.com/docs/opengraph/using-objects) together with Parse Cloud Code (https://parse.com/docs/cloud_code_guide). 
 
+What it does:
+==========================
+* Before saving a Parse object the script will create a new OG entiy and use the object data to populate the OG entity with title, description, image & url. 
+* The OG object ID will be saved in the column "og_object_id".
+* If the OG entity already exists, it will update it.
 
 Setup
 ==========================
@@ -19,6 +24,16 @@ Setup
 * Go back to the Parse Data Browser and insert an object. 
 
 If everything is done right, the column og_object_id should be populated automatically. The created object can be reviewed via https://graph.facebook.com/{og_object_id}
+
+
+Usage
+==========================
+```javascript
+Parse.Cloud.beforeSave("city", function (request, response) {
+    openGraph.setObjectName("city");
+    openGraph.update(request, response);
+});
+```
 
 
 From Facebook: Using the Object API
