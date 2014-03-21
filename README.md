@@ -11,6 +11,7 @@ What it does:
 
 Setup
 ==========================
+* Install the Parse Command Line Tool via terminal: "curl -s https://www.parse.com/downloads/cloud_code/installer.sh | sudo /bin/bash"
 * Create Parse app (https://parse.com/apps/)
 * Go to "Settings" > Application Keys. Rename /config/global.sample.json to /config/global.json and add you Application ID and Master Key
 * Go to "Web hosting" and set a Parse App Name (http://parseappname.parseapp.com)
@@ -21,6 +22,7 @@ Setup
 * Go to Graph API Explorer https://graph.facebook.com/oauth/access_token?client_id={app-id}&client_secret={app-secret}&grant_type=client_credentials
 * Take the access_token value of the response and place it in /cloud/config.sample.js.
 * Save /cloud/config.sample.js as /cloud/config.js
+* Run "parse deploy" in the project root (via terminal) to send your code to Parse.
 * Go back to the Parse Data Browser and insert an object. 
 
 If everything is done right, the column og_object_id should be populated automatically. The created object can be reviewed via https://graph.facebook.com/{og_object_id}
