@@ -1,4 +1,4 @@
-Create OG obhect using the Facebook Object API and Parse Cloud Code
+Create Open Graph Objects using the Facebook Object API and Parse Cloud Code
 ==========================
 
 This repo demonstrates how to use the Facebook Object API (https://developers.facebook.com/docs/opengraph/using-objects) together with Parse Cloud Code (https://parse.com/docs/cloud_code_guide). 
