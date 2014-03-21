@@ -3,6 +3,24 @@ Create Open Graph Objects using the Facebook Object API and Parse Cloud Code
 
 This repo demonstrates how to use the Facebook Object API (https://developers.facebook.com/docs/opengraph/using-objects) together with Parse Cloud Code (https://parse.com/docs/cloud_code_guide). 
 
+
+Setup
+==========================
+* Create Parse app (https://parse.com/apps/)
+* Go to "Settings" > Application Keys. Rename /config/global.sample.json to /config/global.json and add you Application ID and Master Key
+* Go to "Web hosting" and set a Parse App Name (http://parseappname.parseapp.com)
+* Go to "Data Browser" and add a new class "city" (custom fields: description, image, url, og_object_id; All as datatype "string")
+* Create a Facebook App: https://developers.facebook.com/apps
+* Go to "Open Graph" and add an object with the name "City"
+* Set an app namespace and place the value in /cloud/config.sample.js
+* Go to Graph API Explorer https://graph.facebook.com/oauth/access_token?client_id={app-id}&client_secret={app-secret}&grant_type=client_credentials
+* Take the access_token value of the response and place it in /cloud/config.sample.js.
+* Save /cloud/config.sample.js as /cloud/config.js
+* Go back to the Parse Data Browser and insert an object. 
+
+If everything is done right, the column og_object_id should be populated automatically. The created object can be reviewed via https://graph.facebook.com/{og_object_id}
+
+
 From Facebook: Using the Object API
 ==========================
 "The Object API lets you create and manage Open Graph objects using a simple HTTP-based API. The Object API is supported for both mobile and web apps.
