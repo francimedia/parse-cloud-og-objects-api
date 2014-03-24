@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Parse-cloud-og-objects-api by francimedia</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Parse-cloud-og-objects-api</h1>
+        <h2>Create OG obhect using the Facebook Object API and Parse Cloud Code</h2>
+        <a href="https://github.com/francimedia/parse-cloud-og-objects-api" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="create-open-graph-objects-using-the-facebook-object-api-and-parse-cloud-code" class="anchor" href="#create-open-graph-objects-using-the-facebook-object-api-and-parse-cloud-code"><span class="octicon octicon-link"></span></a>Create Open Graph Objects using the Facebook Object API and Parse Cloud Code</h1>
+
+<p>This repo demonstrates how to use the Facebook Object API (<a href="https://developers.facebook.com/docs/opengraph/using-objects">https://developers.facebook.com/docs/opengraph/using-objects</a>) together with Parse Cloud Code (<a href="https://parse.com/docs/cloud_code_guide">https://parse.com/docs/cloud_code_guide</a>). </p>
+
+<h1>
+<a name="what-it-does" class="anchor" href="#what-it-does"><span class="octicon octicon-link"></span></a>What it does:</h1>
+
+<ul>
+<li>Before saving a Parse object the script will create a new OG entiy and use the object data to populate the OG entity with title, description, image &amp; url. </li>
+<li>The OG object ID will be saved in the column "og_object_id".</li>
+<li>If the OG entity already exists, it will update it.</li>
+</ul><h1>
+<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h1>
+
+<ul>
+<li>Install the Parse Command Line Tool via terminal: "curl -s <a href="https://www.parse.com/downloads/cloud_code/installer.sh">https://www.parse.com/downloads/cloud_code/installer.sh</a> | sudo /bin/bash"</li>
+<li>Create Parse app (<a href="https://parse.com/apps/">https://parse.com/apps/</a>)</li>
+<li>Go to "Settings" &gt; Application Keys. Rename /config/global.sample.json to /config/global.json and add you Application ID and Master Key</li>
+<li>Go to "Web hosting" and set a Parse App Name (<a href="http://parseappname.parseapp.com">http://parseappname.parseapp.com</a>)</li>
+<li>Go to "Data Browser" and add a new class "city" (custom fields: description, image, url, og_object_id; All as datatype "string")</li>
+<li>Create a Facebook App: <a href="https://developers.facebook.com/apps">https://developers.facebook.com/apps</a>
+</li>
+<li>Go to "Open Graph" and add an object with the name "City"</li>
+<li>Set an app namespace and place the value in /cloud/config.sample.js</li>
+<li>Go to Graph API Explorer <a href="https://graph.facebook.com/oauth/access_token?client_id=%7Bapp-id%7D&amp;client_secret=%7Bapp-secret%7D&amp;grant_type=client_credentials">https://graph.facebook.com/oauth/access_token?client_id={app-id}&amp;client_secret={app-secret}&amp;grant_type=client_credentials</a>
+</li>
+<li>Take the access_token value of the response and place it in /cloud/config.sample.js.</li>
+<li>Save /cloud/config.sample.js as /cloud/config.js</li>
+<li>Run "parse deploy" in the project root (via terminal) to send your code to Parse.</li>
+<li>Go back to the Parse Data Browser and insert an object. </li>
+</ul><p>If everything is done right, the column og_object_id should be populated automatically. The created object can be reviewed via <a href="https://graph.facebook.com/%7Bog_object_id%7D">https://graph.facebook.com/{og_object_id}</a></p>
+
+<h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">Parse</span><span class="p">.</span><span class="nx">Cloud</span><span class="p">.</span><span class="nx">beforeSave</span><span class="p">(</span><span class="s2">"city"</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">openGraph</span><span class="p">.</span><span class="nx">setObjectName</span><span class="p">(</span><span class="s2">"city"</span><span class="p">);</span>
+    <span class="nx">openGraph</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h1>
+<a name="from-facebook-using-the-object-api" class="anchor" href="#from-facebook-using-the-object-api"><span class="octicon octicon-link"></span></a>From Facebook: Using the Object API</h1>
+
+<p>"The Object API lets you create and manage Open Graph objects using a simple HTTP-based API. The Object API is supported for both mobile and web apps.</p>
+
+<p>The Object API is one of two ways that objects can be created. Objects can also be created by adding special markup to web pages that you host. These self-hosted objects must be hosted on your web server and all objects are public. Creating self-hosted objects is covered in our using self-hosted objects documentation. In contrast, the Object API lets you create objects through a single HTTP call without the requirement for a web server to host them. The Object API can also create objects that have custom or non-public privacy settings.</p>
+
+<p>The Object API also includes an API for you to upload images to Facebook to use in objects and stories."</p>
+
+<h1>
+<a name="from-parsecom-what-is-cloud-code" class="anchor" href="#from-parsecom-what-is-cloud-code"><span class="octicon octicon-link"></span></a>From Parse.com: What is Cloud Code?</h1>
+
+<p>Parse's vision is to let developers build any mobile app without dealing with servers. For complex apps, sometimes you just need a bit of logic that isn't running on a mobile device. Cloud Code makes this possible.</p>
+
+<p>Cloud Code is easy to use because it's built on the same JavaScript SDK that powers thousands of apps. The only difference is that this code runs in the Parse Cloud rather than running on a mobile device. When you update your Cloud Code, it becomes available to all mobile environments instantly. You don't have to wait for a new release of your application. This lets you change app behavior on the fly and add new features faster.</p>
+
+<p>Even if you're only familiar with mobile development, we hope you'll find Cloud Code straightforward and easy to use.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/francimedia/parse-cloud-og-objects-api/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/francimedia/parse-cloud-og-objects-api/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/francimedia/parse-cloud-og-objects-api"></a> is maintained by <a href="https://github.com/francimedia">francimedia</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
